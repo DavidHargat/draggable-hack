@@ -1,0 +1,19 @@
+html, body {
+    background-color: #eee;
+}
+
+.container {
+    display: block;
+    border: solid 1px black;
+    position: relative;
+    overflow: hidden;
+    margin: auto;
+    width: 50%;
+    height: 50%;
+}
+
+.draggable {
+    position: relative; 
+    width: 150%;
+    height: 150%;
+}
