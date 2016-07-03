@@ -1,63 +1,57 @@
-
-// Return the first element with this class name.
-var findFirstClass = function(className) {
-    return document.getElementsByClassName(className)[0];
-};
-
-var main = function() {
-    var container = findFirstClass("container");
-    var draggable = findFirstClass("draggable");
-    var ROOT = document.documentElement;
-
-    /*
-    draggable.
-
-    draggable.getLeft = function() {
-        return 
-            draggable.getBoundingClientRect().left - 
-            ROOT.getBoundingClientRect().left;
+(function(){
+var draghack = function( dragElement ) {
+    var container = dragElement.parentElement;
+    var state = {
+        mouse: {y: 0, x: 0},
+        element: {y: 0, x: 0},
+        isDragging: false
     };
 
-    draggable.getTop = function() {
-        return
-            draggable.getBoundingClientRect().top -
-            ROOT.getBoundingClientRect().top;
+    var strToNum = function( str ){
+        var num = parseInt(str.replace("px", ""));
+        return isNaN(num) ? 0 : num;
     };
-*/
-    draggable.draggable = false;
 
-    container.onmousemove = function( mouseEvent ) {
-        if( draggable.isDragging ) {
-          var mx = mouseEvent.pageX,
-              my = mouseEvent.pageY,
-              dx = draggable.startPos.x,
-              dy = draggable.startPos.y;
-          
-          var x = mx - dx;
-          var y = my - dy;
+    var handleMouseMove = function( mouseEvent ) {
+        var mx = mouseEvent.pageX,
+            my = mouseEvent.pageY,
+            dx = state.mouse.x,
+            dy = state.mouse.y,
+            sx = state.element.x,
+            sy = state.element.y;
 
-          draggable.style.left = x + "px";
-          draggable.style.top  = y + "px";
+        if( state.isDragging ) {
+            var x = (sx + mx - dx);
+            var y = (sy + my - dy);
+            dragElement.style.left = x + "px";
+            dragElement.style.top = y + "px";
         }
+    };
+
+    var handleMouseDown = function( mouseEvent ) {
+        state.isDragging = true;
+        state.mouse.x = mouseEvent.pageX;
+        state.mouse.y = mouseEvent.pageY;
+        state.element.x = strToNum(dragElement.style.left);
+        state.element.y = strToNum(dragElement.style.top);
+        mouseEvent.preventDefault();
         return false;
     };
 
-    document.onmousedown = function( mouseEvent ) {
-        var pos = draggable.getBoundingClientRect();
-        draggable.isDragging = true;
-        draggable.startPos = {
-          x: pos.left + mouseEvent.pageX, 
-          y: pos.top + mouseEvent.pageY
-        };
-        return false;
+    var handleMouseUp = function( mouseEvent ) {
+        state.isDragging = false;
     };
 
-    document.onmouseup = function( mouseEvent ) {
-        draggable.isDragging = false;
-        draggable.endPos = {x: mouseEvent.pageX - pos.left, y: mouseEvent.pageY - pos.right };
-        return false;
-    };
+    dragElement.style.position = "relative";
+    window.addEventListener("mouseup", handleMouseUp);
+    container.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mousemove", handleMouseMove);
 };
-
-window.onload = main;
-
+var loadHack = function(){
+    var elements = document.getElementsByClassName("draghack");
+    for(var i = 0; i < elements.length; i++) {
+        draghack(elements[i]);
+    }
+};
+window.addEventListener("load", loadHack);
+})();
