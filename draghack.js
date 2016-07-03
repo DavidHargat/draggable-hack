@@ -1,6 +1,5 @@
 (function(){
 var draghack = function( dragElement ) {
-    var container = dragElement.parentElement;
     var state = {
         mouse: {y: 0, x: 0},
         element: {y: 0, x: 0},
@@ -44,7 +43,7 @@ var draghack = function( dragElement ) {
 
     dragElement.style.position = "relative";
     window.addEventListener("mouseup", handleMouseUp);
-    container.addEventListener("mousedown", handleMouseDown);
+    dragElement.parentElement.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mousemove", handleMouseMove);
 };
 var loadHack = function(){
